@@ -71,7 +71,7 @@ public class Test_02_GetRequestWithPathMethod {
         Response response = given().accept(ContentType.JSON)
                 .queryParam("pagesize", 50)
                 .queryParam("page", 1)
-                .queryParam("name","isa")
+//                .queryParam("name","isa")
                 .when()
                 .get("/allusers/alluser");
 
@@ -79,19 +79,35 @@ public class Test_02_GetRequestWithPathMethod {
         assertEquals(response.contentType(),"application/json; charset=UTF-8");
 
         //headers kontrol edelim
-        assertEquals(response.header("Content-Type"),"application/json; charset=UTF-8"));
+        assertEquals(response.header("Content-Type"),"application/json; charset=UTF-8");
         assertEquals(response.getHeader("Content-Type"),"application/json; charset=UTF-8");
         assertTrue(response.headers().toString().contains("Content-Type"));
 
+        //ilk elemanı assert edelim.
         int idFirst = response.path("id[0]");
         assertEquals(idFirst,1);
-
         assertEquals(response.path("name[0]"),"MercanS");
 
+        //son elemanı assert edelim.
         int lastid = response.path("id[-1]");
         assertEquals(lastid,102);
+        assertEquals(response.path("name[-1]"),"GHAN");
+        assertEquals(response.path("name[49]"),"GHAN");
+        assertEquals(response.path("company[2]"),"Amazon");
 
+        //3.elemanın 2. skillini assert edelim.
+        System.out.println("response.path(\"skills[2]\") = " + response.path("skills[2]"));
+        assertEquals(response.path("skills[2][1]"),"TestNG");
 
+        //3.elemanın 2.educationın schoolunu alalım..
+        System.out.println("response.path(\"education[2].school[1]\") = " + response.path("education[2].school[1]"));
+        System.out.println("response.path(\"education[2][1].school\") = " + response.path("education[2][1].school"));
+        System.out.println("response.path(\"education[2][1].school\") = " + response.path("education[2].school")); //bütün schoolları yazdırır.
+
+        assertEquals(response.path("skills[2][1]"),"TestNG");
+
+        //son elemanın edcation degreesini alalım.
+        System.out.println("response.path(\"education[-1].degree[0]\") = " + response.path("education[-1].degree[0]"));
 
     }
 }
